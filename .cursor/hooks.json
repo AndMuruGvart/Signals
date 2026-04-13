@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "hooks": {
+    "beforeShellExecution": [
+      {
+        "command": "node .cursor/hooks/dangerous-shell-guard.cjs",
+        "matcher": "git reset --hard|git checkout --|rm -rf|docker compose down -v|del /s /q",
+        "failClosed": true
+      }
+    ],
+    "beforeReadFile": [
+      {
+        "command": "node .cursor/hooks/secret-file-guard.cjs",
+        "failClosed": true
+      }
+    ],
+    "subagentStart": [
+      {
+        "command": "node .cursor/hooks/subagent-budget.cjs"
+      }
+    ]
+  }
+}

@@ -1,0 +1,13 @@
+---
+description: "Use when navigating the repo or deciding where changes belong in Signal Lab."
+alwaysApply: true
+---
+
+# Repo Map
+
+- `apps/web`: Next.js App Router UI, shadcn-style components, TanStack Query data fetching, React Hook Form scenario launcher.
+- `apps/api`: NestJS API, Prisma schema/migrations, Prometheus endpoint at `/metrics`, Loki push, Sentry-compatible event capture.
+- `infra`: Docker Compose dependencies plus Grafana, Loki, and Prometheus provisioning.
+- `services/loki-viewer`: lightweight HTML viewer backed by Loki queries.
+- `services/sentry-sink`: local Sentry-compatible event sink and inbox UI.
+- `.cursor`: project AI layer. Keep it scoped, concrete, and context-efficient.

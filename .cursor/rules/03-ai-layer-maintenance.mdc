@@ -1,0 +1,18 @@
+---
+description: "Use when editing .cursor, AGENTS.md, or submission docs."
+globs:
+  - ".cursor/**"
+  - "AGENTS.md"
+  - "README.md"
+  - "docs/**"
+  - "prds/**"
+alwaysApply: false
+---
+
+# AI Layer Maintenance
+
+- Keep rules short, scoped, and actionable. Prefer several focused files over one long handbook.
+- Skills should teach a reusable workflow, not duplicate repository prose.
+- Commands are legacy-compatible convenience prompts. Keep them task-shaped and concise.
+- Hooks must have a clear operational purpose: safety, context economy, or predictable execution.
+- When the repo changes materially, update the relevant docs and AI-layer artifacts in the same change.

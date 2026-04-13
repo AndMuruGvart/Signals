@@ -1,0 +1,126 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: signal
+      POSTGRES_PASSWORD: signal
+      POSTGRES_DB: signal_lab
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U signal -d signal_lab"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: ./apps/api
+    environment:
+      PORT: 3001
+      NODE_ENV: production
+      DATABASE_URL: postgresql://signal:signal@postgres:5432/signal_lab?schema=public
+      LOKI_PUSH_URL: http://loki:3100/loki/api/v1/push
+      SENTRY_DSN: http://0123456789abcdef0123456789abcdef@sentry:8123/1
+    depends_on:
+      postgres:
+        condition: service_healthy
+      loki:
+        condition: service_started
+      sentry:
+        condition: service_started
+    ports:
+      - "3001:3001"
+
+  web:
+    build:
+      context: ./apps/web
+    environment:
+      NODE_ENV: production
+      API_INTERNAL_URL: http://api:3001
+      GRAFANA_INTERNAL_URL: http://grafana:3000
+      SENTRY_INTERNAL_URL: http://sentry:8123
+      NEXT_PUBLIC_PROMETHEUS_METRICS_URL: http://localhost:3001/metrics
+      NEXT_PUBLIC_LOKI_VIEWER_URL: http://localhost:3100
+    depends_on:
+      api:
+        condition: service_started
+      grafana:
+        condition: service_started
+      sentry:
+        condition: service_started
+    ports:
+      - "3000:3000"
+
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.enable-lifecycle
+    depends_on:
+      api:
+        condition: service_started
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+
+  loki:
+    image: grafana/loki:3.1.1
+    command: -config.file=/etc/loki/config.yml
+    volumes:
+      - ./infra/loki/config.yml:/etc/loki/config.yml:ro
+      - loki-data:/loki
+
+  loki-viewer:
+    build:
+      context: ./services/loki-viewer
+    environment:
+      PORT: 3100
+      LOKI_URL: http://loki:3100
+    depends_on:
+      loki:
+        condition: service_started
+    ports:
+      - "3100:3100"
+
+  grafana:
+    image: grafana/grafana:11.2.0
+    environment:
+      GF_SERVER_ROOT_URL: http://localhost:3000/grafana
+      GF_SERVER_SERVE_FROM_SUB_PATH: "true"
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
+      GF_AUTH_DISABLE_LOGIN_FORM: "true"
+      GF_USERS_DEFAULT_THEME: light
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /var/lib/grafana/dashboards/signal-lab-overview.json
+    depends_on:
+      prometheus:
+        condition: service_started
+      loki:
+        condition: service_started
+    ports:
+      - "3002:3000"
+    volumes:
+      - ./infra/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./infra/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - ./infra/grafana/dashboard-providers/provider.yml:/etc/grafana/provisioning/dashboards/provider.yml:ro
+      - grafana-data:/var/lib/grafana
+
+  sentry:
+    build:
+      context: ./services/sentry-sink
+    environment:
+      PORT: 8123
+    ports:
+      - "8123:8123"
+
+volumes:
+  postgres-data:
+  prometheus-data:
+  loki-data:
+  grafana-data:

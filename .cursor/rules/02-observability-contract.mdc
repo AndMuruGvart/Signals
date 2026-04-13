@@ -1,0 +1,16 @@
+---
+description: "Use when editing API, observability, docker-compose, or dashboard files."
+globs:
+  - "apps/api/**"
+  - "infra/**"
+  - "docker-compose.yml"
+alwaysApply: false
+---
+
+# Observability Contract
+
+- Every scenario run should leave four traces: persisted history row, Prometheus metric movement, structured log entry, and optional error event.
+- `system_error` must fail intentionally without crashing the whole app.
+- Prefer stable labels with low cardinality in Prometheus and Loki. Scenario names and status are acceptable; free-form note text is not.
+- Grafana should be provisioned, not manually configured.
+- If you add a new scenario, update the UI options, backend implementation, and dashboard expectations together.

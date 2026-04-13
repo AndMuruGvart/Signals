@@ -1,0 +1,11 @@
+---
+description: "Use when working anywhere in Signal Lab. Enforces the required stack and the demo-first contract."
+alwaysApply: true
+---
+
+# Signal Lab Stack Guardrails
+
+- Keep the required stack: Next.js, shadcn/ui, Tailwind CSS, TanStack Query, React Hook Form, NestJS, PostgreSQL, Prisma, Prometheus, Grafana, Loki, Docker Compose.
+- Do not replace required technologies with equivalents unless the user explicitly asks and the tradeoff is documented.
+- Prefer the shortest path that preserves the evaluator journey: one command to start, one UI action to create signals, one place to inspect each signal.
+- When local infrastructure is unavailable, keep the repository reproducible and explain the missing external prerequisite instead of hiding the gap.
