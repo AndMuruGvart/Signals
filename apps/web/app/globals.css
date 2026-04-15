@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f4efe7;
+  --foreground: #1b1a18;
+  --card: rgba(255, 251, 245, 0.86);
+  --card-foreground: #1b1a18;
+  --muted: #d9d0c3;
+  --muted-foreground: #6e655c;
+  --border: rgba(75, 58, 43, 0.16);
+  --primary: #c84c2a;
+  --primary-foreground: #fff7f0;
+  --accent: #0f766e;
+  --accent-foreground: #ecfdf7;
+  --ring: rgba(200, 76, 42, 0.35);
+  --success: #1f7a4f;
+  --warning: #9a5b12;
+  --destructive: #9f2c21;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-destructive: var(--destructive);
+  --font-sans: var(--font-display);
+  --font-mono: var(--font-mono-ui);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-display), sans-serif;
+  background-image:
+    radial-gradient(
+      circle at top left,
+      rgba(200, 76, 42, 0.16),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at bottom right,
+      rgba(15, 118, 110, 0.18),
+      transparent 28%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(255, 251, 245, 0.84),
+      rgba(244, 239, 231, 0.96)
+    );
+}
+
+a {
+  color: inherit;
+}
+
+::selection {
+  background: rgba(200, 76, 42, 0.18);
+}
+
+.signal-surface {
+  background: var(--card);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  box-shadow: 0 24px 80px rgba(55, 35, 19, 0.12);
+}
+
+.signal-grid {
+  background-image:
+    linear-gradient(rgba(110, 101, 92, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(110, 101, 92, 0.08) 1px, transparent 1px);
+  background-size: 30px 30px;
+}
+
+.status-dot {
+  position: relative;
+}
+
+.status-dot::before {
+  content: "";
+  display: inline-flex;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+  background: currentColor;
+  margin-right: 0.5rem;
+}
